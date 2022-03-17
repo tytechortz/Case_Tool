@@ -22,16 +22,16 @@ df = df.applymap(lambda x: pd.to_datetime(str(x),format='%Y%m%d', errors='coerce
 # mask = (df['SpecCollectionDate1'] >= '2022-03-04') & (df['SpecCollectionDate1'] <= '2022-03-11')
 # df = df.loc[mask]
 # print(df)
-df['create_minus_report'] = df['CreationDate_1'] - df['ReportDate']
-df['report_minus_collection'] = df['ReportDate'] - df['SpecCollectionDate1']
+# df['create_minus_report'] = df['CreationDate_1'] - df['ReportDate']
+# df['report_minus_collection'] = df['ReportDate'] - df['SpecCollectionDate1']
 
 
 
 
-df.create_minus_report = df.create_minus_report / np.timedelta64(1, 'D')
-df.report_minus_collection = df.report_minus_collection / np.timedelta64(1, 'D')
+# df.create_minus_report = df.create_minus_report / np.timedelta64(1, 'D')
+# df.report_minus_collection = df.report_minus_collection / np.timedelta64(1, 'D')
 
-df = df[df['report_minus_collection'] >= 0]
+# df = df[df['report_minus_collection'] >= 0]
 # print(df)
 
 
@@ -76,7 +76,30 @@ def update_histogram1(end_date, start_date):
     print(start_date)
     mask = (df['ReportDate'] >= start_date) & (df['ReportDate'] <= end_date)
     df_test = df.loc[mask]
-    return print(df_test)
+
+    df_test['create_minus_report'] = df_test['CreationDate_1'] - df_test['ReportDate']
+    df_test['report_minus_collection'] = df_test['ReportDate'] - df_test['SpecCollectionDate1']
+    print(df_test)
+    df_test.create_minus_report = df_test.create_minus_report / np.timedelta64(1, 'D')
+    df_test.report_minus_collection = df_test.report_minus_collection / np.timedelta64(1, 'D')
+    print(df_test)
+    df_test = df_test[df_test['report_minus_collection'] >= 0]
+    
+    traces = []
+
+    traces.append(go.Histogram(
+        x=df_test['create_minus_report']
+    ))
+
+    layout = go.Layout(
+        paper_bgcolor="#1f2630",
+        plot_bgcolor="#1f2630",
+        font=dict(color="#2cfec1"),
+        bargap=0.2
+    )
+
+
+    return {'data': traces, 'layout': layout}
     # data = 
 
 
