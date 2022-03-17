@@ -8,8 +8,9 @@ import plotly.graph_objects as go
 from datetime import date
 
 
-df = pd.read_csv(r'C:\Users\jswank\Desktop\File2.csv')
-
+# df = pd.read_csv(r'C:\Users\jswank\Desktop\File2.csv')
+df = pd.read_csv('File2.csv')
+# print(df)
 df = df.astype('Int64')
 df = df.astype('str')
 df = df.sort_values(by='CreationDate_1')
@@ -31,7 +32,7 @@ df.create_minus_report = df.create_minus_report / np.timedelta64(1, 'D')
 df.report_minus_collection = df.report_minus_collection / np.timedelta64(1, 'D')
 
 df = df[df['report_minus_collection'] >= 0]
-print(df)
+# print(df)
 
 
 def get_layout():
@@ -44,7 +45,7 @@ def get_layout():
             ),
             html.Div([
                 html.Div([
-                    html.Div(id='histogram1')
+                    dcc.Graph(id='histogram1')
                 ],
                     className='eight columns'
                 ),
@@ -68,12 +69,14 @@ app.config['suppress_callback_exceptions']=True
 
 @app.callback(
     Output('histogram1', 'figure'),
-    Input('date', 'start_date'),
-    Input('date', 'end_date'))
-def update_histogram1(start_date, end_date):
-    mask = (df['SpecCollectionDate1'] >= start_date) & (df['SpecCollectionDate1'] <= end_date)
-    df = df.loc[mask]
-    return(print(df))
+    Input('date', 'end_date'),
+    Input('date', 'start_date'))
+def update_histogram1(end_date, start_date):
+    print(end_date)
+    print(start_date)
+    mask = (df['ReportDate'] >= start_date) & (df['ReportDate'] <= end_date)
+    df_test = df.loc[mask]
+    return print(df_test)
     # data = 
 
 
@@ -87,4 +90,4 @@ def update_histogram1(start_date, end_date):
 # fig.show()
 
 if __name__ == "__main__":  
-    app.run_server(debug=True)
+    app.run_server(port=8080, debug=True)
